@@ -6,7 +6,7 @@ from typing import Callable, Generator, List, Tuple, Union
 
 from anthropic import Anthropic, AsyncAnthropic
 from groq import Groq, AsyncGroq
-from instructor import Instructor, AsyncInstructor
+from instructor import Instructor, AsyncInstructor, Partial
 from openai import OpenAI, AsyncOpenAI
 from rich.console import Console
 
@@ -56,6 +56,7 @@ def prompt(
     model=LLMModel.GPT4_Omni,
     max_tokens=1024,
     max_retries=3,
+    stream=False,
 ):
     def decorator_prompt(func: Callable):
         InputType = get_type_info(func, "input")
@@ -74,15 +75,30 @@ def prompt(
                     _,
                     messages,
                 ):
-                    completion = await aclient.chat.completions.create(
-                        model=model,
-                        max_tokens=max_tokens,
-                        max_retries=max_retries,
-                        response_model=InputType,
-                        messages=messages,
-                    )
-                    result = await func(message.content, completion)
-                    return result
+                    if stream:
+                        PartialInputType = Partial[InputType]
+                        completion = await aclient.chat.completions.create(
+                            model=model,
+                            max_tokens=max_tokens,
+                            max_retries=max_retries,
+                            response_model=PartialInputType,
+                            messages=messages,
+                            stream=stream,
+                        )
+                        result = await func(
+                            message.content, input=completion, stream=completion
+                        )
+                        return result
+                    else:
+                        completion = await aclient.chat.completions.create(
+                            model=model,
+                            max_tokens=max_tokens,
+                            max_retries=max_retries,
+                            response_model=InputType,
+                            messages=messages,
+                        )
+                        result = await func(message.content, input=completion)
+                        return result
         else:
 
             @wraps(func)
