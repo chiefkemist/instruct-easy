@@ -2,12 +2,14 @@ import asyncio
 from asyncio import iscoroutinefunction
 from contextlib import contextmanager
 from functools import wraps
-from typing import Callable, Generator, List, Tuple, Union
+from typing import Callable, Generator, Iterable, List, Tuple, Union
 
 from anthropic import Anthropic, AsyncAnthropic
 from groq import Groq, AsyncGroq
+from groq.types.chat import ChatCompletionMessageParam as GroqChatCompletionMessageParam
 from instructor import Instructor, AsyncInstructor, Partial
 from openai import OpenAI, AsyncOpenAI
+from openai.types.chat import ChatCompletionMessageParam as OpenAIChatCompletionMessageParam
 from rich.console import Console
 
 from instruct_easy.utils import (
@@ -33,7 +35,7 @@ def msg_ctx(
     Tuple[
         Union[AsyncInstructor, AsyncOpenAI, AsyncAnthropic, AsyncGroq],
         Union[Instructor, OpenAI, Anthropic, Groq],
-        List[Union[SystemMessage, UserMessage, AssistantMessage]],
+        Iterable[Union[OpenAIChatCompletionMessageParam, GroqChatCompletionMessageParam]],
     ],
     None,
     None,
@@ -64,7 +66,7 @@ def prompt(
         if iscoroutinefunction(func):
 
             @wraps(func)
-            async def wrap_prompt_result(*args, **kwargs):
+            async def async_wrap_prompt_result(*args, **kwargs):
                 console.log(
                     f"[{model}, {max_tokens}, {max_retries}]", style="bold italic green"
                 )
@@ -99,6 +101,7 @@ def prompt(
                         )
                         result = await func(message.content, input=completion)
                         return result
+            return async_wrap_prompt_result
         else:
 
             @wraps(func)
@@ -122,7 +125,6 @@ def prompt(
                     )
                     result = func(message.content, completion)
                     return result
-
-        return wrap_prompt_result
+            return wrap_prompt_result
 
     return decorator_prompt
