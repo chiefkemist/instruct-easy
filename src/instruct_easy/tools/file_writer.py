@@ -25,7 +25,7 @@ def file_writer(base_dir: str):
                 if file_detail.file_name.endswith(file_detail.file_extension):
                     file_path = f"{base_dir}/{file_detail.file_path}/{file_detail.file_name}"
                 else:
-                    file_path = f"{base_dir}/{file_detail.file_path}/{file_detail.file_name}.{file_detail.file_extension}"
+                    file_path = f"{base_dir}/{file_detail.file_path}/{file_detail.file_name}{file_detail.file_extension}"
                 with open(file_path, file_detail.file_mode, encoding=file_detail.file_encoding) as file:
                     file.write(file_detail.file_content)
             result = func(param, input)
