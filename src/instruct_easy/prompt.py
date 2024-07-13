@@ -71,7 +71,7 @@ def prompt(
                     f"[{model}, {max_tokens}, {max_retries}]", style="bold italic green"
                 )
                 # result = func(*args, **kwargs)
-                message = UserMessage(content=args[0].content)
+                message = UserMessage(content=args[0])
                 with msg_ctx(message, context=context, model=model) as (
                     aclient,
                     _,
@@ -110,7 +110,7 @@ def prompt(
                     f"[{model}, {max_tokens}, {max_retries}]", style="bold italic green"
                 )
                 # result = func(*args, **kwargs)
-                message = UserMessage(content=args[0].content)
+                message = UserMessage(content=args[0])
                 with msg_ctx(message, context=context, model=model) as (
                     _,
                     client,
