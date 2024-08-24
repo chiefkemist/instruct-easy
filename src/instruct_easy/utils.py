@@ -14,7 +14,10 @@ class LLMModel(str, Enum):
     Claude35_Sonnet = "claude-3-5-sonnet-20240620"
     Claude3_Haiku = "claude-3-haiku-20240307"
     GPT4_Omni = "gpt-4o"
+    GPT4_Omni_mini = "gpt-4o-mini"
     GPT35_Turbo = "gpt-3.5-turbo"
+    LLAMA31_70b = "llama-3.1-70b-versatile"
+    LLAMA31_8b = "llama-3.1-8b-instant"
     LLAMA3_70b = "llama3-70b-8192"
     LLAMA3_8b = "llama3-8b-8192"
 
