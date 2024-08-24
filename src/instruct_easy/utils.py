@@ -26,9 +26,9 @@ def gen_client(model=LLMModel.GPT4_Omni) -> Union[Instructor, OpenAI, Anthropic,
     match model:
         case LLMModel.Claude3_Opus | LLMModel.Claude35_Sonnet | LLMModel.Claude3_Haiku:
             client = instructor.from_anthropic(Anthropic())
-        case LLMModel.GPT4_Omni | LLMModel.GPT35_Turbo:
+        case LLMModel.GPT4_Omni | LLMModel.GPT4_Omni_mini | LLMModel.GPT35_Turbo:
             client = instructor.patch(OpenAI())
-        case LLMModel.LLAMA3_70b | LLMModel.LLAMA3_8b:
+        case LLMModel.LLAMA31_70b | LLMModel.LLAMA31_8b | LLMModel.LLAMA3_70b | LLMModel.LLAMA3_8b:
             client = instructor.from_groq(Groq())
     return client
 
